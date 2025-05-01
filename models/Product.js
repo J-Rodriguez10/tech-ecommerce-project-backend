@@ -1,11 +1,17 @@
 const mongoose = require("mongoose");
 
+/***
+ * Defines the schema for products, including display info, pricing, inventory, reviews, categorization,
+ * and filterable attributes like color, storage, and tags.
+ */
+
 const ProductSchema = new mongoose.Schema({
   // Product Display:
   name: { type: String, required: true },
   description: { type: String, required: true },
   productImages: { type: [String], required: true }, // First two images are the main & hover images
   rating: { type: Number, default: 0 }, // Optional, defaults to 0
+  
   reviews: {
     type: [
       {
@@ -17,6 +23,7 @@ const ProductSchema = new mongoose.Schema({
     default: [],
     required: false,
   },
+
   createdAt: { type: Date, default: Date.now }, // Automatically sets to the current date
 
   // Hierarchical Category Structure:
@@ -30,17 +37,21 @@ const ProductSchema = new mongoose.Schema({
   price: { type: Number, required: true },
   stock: { type: Number, required: true, min: 0 }, // Stock cannot be negative
   // Storage size as an array of numbers (e.g., [16, 64, 256])
+
   storageSize: {
     type: [Number],
     enum: [16, 32, 64, 128, 256, 512, 1024], // Allowed storage sizes
     default: undefined, // Ensures it's optional
   },
+
   color: { type: [String], required: true },
+
   tags: {
     type: [String],
     enum: ["hotDeal", "featured", "specialOffer"],
     default: [],
   }, // Optional, defaults to an empty array
+
   brand: { type: String, required: true },
 });
 

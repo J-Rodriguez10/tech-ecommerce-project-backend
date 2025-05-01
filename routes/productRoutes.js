@@ -3,6 +3,10 @@ const Product = require("../models/Product");
 const axios = require("axios");
 const { BACK_END_URL } = require("../util/config");
 
+/***
+ * Handles product-related API endpoints including filtering, sorting, and pagination (GET /),
+ * single and batch product fetching (GET /:id, POST /fetch), and image proxying for secure frontend display.
+ */
 
 const router = express.Router();
 

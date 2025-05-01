@@ -1,5 +1,11 @@
 const mongoose = require("mongoose");
 
+/***
+ * Defines the structure for order documents, including user info, products, shipping,
+ * payment, and status tracking.
+ */
+
+
 const OrderSchema = new mongoose.Schema({
   userId: { 
     type: mongoose.Schema.Types.ObjectId, 

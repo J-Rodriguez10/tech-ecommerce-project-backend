@@ -1,9 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const Order = require("../models/Order");  // Import the Order model
-const authenticateUser = require('../middleware/authenticateUser'); // Import the authenticateUser middleware
-const User = require("../models/User");  // Import the User model
+const Order = require("../models/Order");
+const authenticateUser = require('../middleware/authenticateUser'); 
+const User = require("../models/User"); 
 
+
+/***
+ * Provides authenticated endpoints to fetch user orders, create new orders from cart contents,
+ * and update order statuses with validation and authorization.
+ */
 
 // @desc    Get all orders of a specific user (authenticated route)
 // @route   GET /api/orders

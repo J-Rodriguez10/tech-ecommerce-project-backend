@@ -1,6 +1,12 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
+
+/***
+ * Stores user details, hashed passwords, and embedded cart/wishlist items, with middleware
+ * for password hashing and a method for login validation.
+ */
+
 const UserSchema = new mongoose.Schema({
   // Basic user information
   firstName: { type: String, required: true },

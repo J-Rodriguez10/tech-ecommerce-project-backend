@@ -7,12 +7,46 @@ const router = express.Router();
 const authenticateUser = require('../middleware/authenticateUser'); // Import the middleware
 const mongoose = require('mongoose');  // Make sure mongoose is required at the top of your file
 
-const { BACK_END_URL } = require('../util/config');
 
+/**
+ * ===========================================
+ *           USERS ROUTER SUMMARY
+ * ===========================================
+ *
+ * This router handles all user-related actions:
+ *
+ * AUTHENTICATION
+ *  - POST   /api/users/register - Register new user (JWT issued)
+ *  - POST   /api/users/login - Login existing user (JWT issued)
+ *  - GET    /api/users/profile - Fetch authenticated user profile
+ *
+ * CART MANAGEMENT (Authenticated)
+ *  - POST   /api/users/cart - Add/Update/Increment product in cart
+ *  - DELETE /api/users/cart/:productId  -  Remove specific product from cart
+ *  - DELETE /api/users/cart - Clear entire cart
+ *
+ * WISHLIST MANAGEMENT (Authenticated)
+ *  - POST   /api/users/wishlist - Add product to wishlist
+ *  - DELETE /api/users/wishlist/:id - Remove product from wishlist
+ *
+ * ORDER MANAGEMENT (Authenticated)
+ *  - POST   /api/users/orders - Place an order (clears cart)
+ *  - DELETE /api/users/orders/:orderId - Remove specific order
+ *
+ * INTERNAL BEHAVIOR
+ *  - Uses JWT authentication middleware (`authenticateUser`)
+ *  - Passwords are hashed with bcrypt before saving
+ *  - JWT includes expiration; client receives `expiresIn` in ms
+ *  - Product images in cart/wishlist use proxy via BACK_END_URL
+ *  - All sensitive routes are secured using middleware
+ *
+ */
+
+const { BACK_END_URL } = require('../util/config');
 
 // Helper function to generate JWT tokens
 const generateToken = (userId) => {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '2h' });
 };
 
 // @desc    Register a new user
@@ -47,19 +81,21 @@ router.post('/register', async (req, res) => {
     // Log the user object after registration
     console.log('User registered successfully:', user);
 
+    const decoded = jwt.decode(token);
+    const expiresInMs = decoded.exp * 1000 - Date.now()
+
     // Return the full user object (not just the userId)
     res.status(201).json({
       message: 'User registered successfully',
       token,
       user, // Include the full user object here
+      expiresIn: expiresInMs,
     });
   } catch (error) {
     console.error("Error during registration:", error);
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 });
-
-
 
 // @desc    Login user
 // @route   POST /api/users/login
@@ -92,11 +128,15 @@ router.post('/login', async (req, res) => {
     // Step 3: Generate JWT token
     const token = generateToken(user._id);
 
+    const decoded = jwt.decode(token);
+    const expiresInMs = decoded.exp * 1000 - Date.now(); 
+
     // Step 4: Send successful response with token and full user object
     res.status(200).json({
       message: 'Login successful',
       token,
       user, // Return the entire user object (including cart, wishlist, orders, etc.)
+      expiresIn: expiresInMs,
     });
   } catch (error) {
     console.error("Error during login:", error);
