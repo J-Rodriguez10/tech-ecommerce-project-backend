@@ -4,7 +4,7 @@ This is the backend for the **Phoone** e-commerce web application — a full-sta
 
 Built with **Express.js** and **MongoDB Atlas**, this backend powers the frontend deployed on Vercel and supports key business logic and data handling.
 
-👉 [View the Frontend Repository](https://github.com/your-username/your-frontend-repo) <!-- Replace with actual link -->
+👉 [View the Frontend Repository](https://github.com/J-Rodriguez10/tech-ecommerce-project)
 
 ---
 
